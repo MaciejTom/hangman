@@ -1,7 +1,9 @@
 import { Quote } from "./Quote.js";
 
+
 export class Game {
-    
+    currentStep = 0
+    lastStep = 7;
     quotes = [{
         text: 'pan tadeusz',
         category: "Utwór literacki"
@@ -11,7 +13,7 @@ export class Game {
         category: "Utwór literacki"
     },
     {
-        text: "Siala baba mak",
+        text: "siala baba mak",
         category: "Powiedzenie"
     }]
 
@@ -22,11 +24,11 @@ export class Game {
         this.wordWrapper = wordWrapper;
         this.outputWrapper = outputWrapper;
 
-        const {text, category} = this.quotes[Math.floor(Math.random() * this.quotes.length)];
+        const { text, category } = this.quotes[Math.floor(Math.random() * this.quotes.length)];
         this.categoryWrapper.innerHTML = category;
         this.quote = new Quote(text)
-        
-       
+
+
     }
     drawLetters() {
         for (let i = 10; i < 36; i++) {
@@ -35,20 +37,48 @@ export class Game {
             const button = document.createElement('button');
             button.textContent = label;
             this.lettersWrapper.appendChild(button);
-            button.addEventListener("click", () => this.guess(label))
+            button.addEventListener("click", (event) => this.guess(label, event));
         }
     }
     drawQuote() {
-        const content = this.quote.changeLettersOnFloor()
-        this.wordWrapper.innerHTML = content
+        const content = this.quote.changeLettersOnFloor();
+        this.wordWrapper.innerHTML = content;
+        if (!content.includes("_")) {
+            this.winning();
+        }
     }
-    guess(letter) {
+    guess(letter, event) {
         this.quote.guess(letter)
-        this.drawQuote()
+        if (this.quote.guess(letter)) {
+            this.drawQuote()
+            event.target.disabled = true;
+        } else {
+            this.currentStep++;
+            document.querySelectorAll(".step")[this.currentStep].style.opacity = "1";
+            if (this.currentStep == this.lastStep) {
+                this.loosing()
+            }
+           
+
+
+        }
+
+
+    }
+    winning() {
+        this.wordWrapper.innerHTML = `GRATULACJE! WYGRYWASZ GRE!`;
+        this.lettersWrapper.innerHTML = ``;
+        this.categoryWrapper.innerHTML = ``;
+    }
+    loosing() {
+        this.wordWrapper.innerHTML = `PRZEGRYWASZ! NIESTETY!`;
+        this.lettersWrapper.innerHTML = ``;
+        this.categoryWrapper.innerHTML = ``;
     }
 
     start() {
-        
+
+        document.querySelectorAll(".step")[this.currentStep].style.opacity = "1"
         this.drawLetters()
         const content = this.quote.changeLettersOnFloor()
         this.wordWrapper.innerHTML = content
@@ -63,5 +93,5 @@ const game = new Game({
     wordWrapper: document.querySelector("#word"),
     outputWrapper: document.querySelector("#output")
 })
-console.log(game)
+
 game.start();

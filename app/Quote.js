@@ -30,7 +30,6 @@ export class Quote {
         } 
         this.guessed.push(letter)
        
-        console.log(letter)
         return true
 
     }
