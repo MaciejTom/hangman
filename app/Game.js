@@ -1,12 +1,13 @@
 import { Quote } from "./Quote.js";
 
 export class Game {
+    
     quotes = [{
-        text: 'Pan Tadeusz',
+        text: 'pan tadeusz',
         category: "Utwór literacki"
     },
     {
-        text: "Akademia Pana Kleksa",
+        text: "akademia pana kleksa",
         category: "Utwór literacki"
     },
     {
@@ -37,8 +38,13 @@ export class Game {
             button.addEventListener("click", () => this.guess(label))
         }
     }
+    drawQuote() {
+        const content = this.quote.changeLettersOnFloor()
+        this.wordWrapper.innerHTML = content
+    }
     guess(letter) {
-        console.log(letter)
+        this.quote.guess(letter)
+        this.drawQuote()
     }
 
     start() {
@@ -46,7 +52,7 @@ export class Game {
         this.drawLetters()
         const content = this.quote.changeLettersOnFloor()
         this.wordWrapper.innerHTML = content
-
+        this.drawQuote()
     }
 }
 
@@ -57,4 +63,5 @@ const game = new Game({
     wordWrapper: document.querySelector("#word"),
     outputWrapper: document.querySelector("#output")
 })
+console.log(game)
 game.start();
